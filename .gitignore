@@ -1,0 +1,6 @@
+
+# data
+*.txt
+
+# compiled programs
+*.bin
