@@ -72,6 +72,13 @@ vector<times> getTimes() {
         result[i].stop_sequence = stoi(data[i][4]);
         result[i].shape_dist_traveled = stod(data[i][8]);
     }
+
+    //make sure it's ordered even if the standard doesn't force it (idk, haven't checked that)
+    sort(result.begin(), result.end(), [](times &a, times &b) {
+        if(a.trip_id == b.trip_id)
+            return a.stop_sequence < b.stop_sequence;
+        return a.trip_id < b.trip_id;
+    });
     return result;
 }
 
