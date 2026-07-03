@@ -1,5 +1,4 @@
 #include "parser.h"
-using namespace std;
 
 
 vector<string> splitLine(string line, char delimiter = ',') {
@@ -16,7 +15,7 @@ vector<string> splitLine(string line, char delimiter = ',') {
     return result;
 }
 
-vector<vector<string>> parseFile(string filename) {
+vector<vector<string>> parseFile(const string filename) {
     ifstream currentFile(filename);
 
     vector<vector<string>> result;
@@ -30,22 +29,56 @@ vector<vector<string>> parseFile(string filename) {
     return result;
 }
 
-
-
-int main() {
-    string filename = "cracow_trams/routes.txt";
-
-    vector<vector<string>> data = parseFile(filename);
-
-    for(int j=0; j<data.size(); j++) {
-        for(int i=0; i<data[j].size(); i++) {
-            cout << j << " " << i << ":  @" << data[j][i] << "@\n";
-            // cout << i << ":  \n";
-            // cout << "@" << v[i] << "@\n";
-            // for(auto c : v[i])
-            //     cout << (int)c << "_";
-            // cout << "\n";
-        }
-        cout << "############\n";
+vector<stops> getStops() {
+    vector<vector<string>> data = parseFile(fileStops);
+    vector<stops> result(data.size());
+    for(int i=0; i<data.size(); i++) {
+        result[i].stop_id = data[i][0];
+        result[i].stop_lat = stod(data[i][4]);
+        result[i].stop_lon = stod(data[i][5]);
     }
+    return result;
 }
+
+seconds convertTime(string curTime) {
+    seconds result = 0;
+    bool prevNum = false;
+    for(auto c : curTime) {
+        if(c == ':') {
+            result *= 6;
+            prevNum = false;
+        }
+        else {
+            result += (c-'0');
+            if(prevNum == false) {
+                prevNum = true;
+                result *= 10;
+            }
+        }
+    }
+    return result;
+}
+vector<times> getTimes() {
+    vector<vector<string>> data = parseFile(fileTimes);
+    vector<times> result(data.size());
+    for(int i=0; i<data.size(); i++) {
+        result[i].trip_id = data[i][0];
+        result[i].arrival_time = convertTime(data[i][1]);
+        result[i].departure_time = convertTime(data[i][2]);
+        result[i].stop_id = data[i][3];
+        result[i].stop_sequence = stoi(data[i][4]);
+        result[i].shape_dist_traveled = stod(data[i][8]);
+    }
+    return result;
+}
+
+vector<trips> getTrips() {
+    vector<vector<string>> data = parseFile(fileTrips);
+    vector<trips> result(data.size());
+    for(int i=0; i<data.size(); i++) {
+        result[i].trip_id = data[i][0];
+        result[i].service_id = data[i][2];
+    }
+    return result;
+}
+
