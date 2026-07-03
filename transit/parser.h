@@ -6,13 +6,6 @@ using namespace std;
 
 typedef unsigned long long seconds;
 
-vector<vector<string>> parseFile(string filename);
-
-
-const string fileTimes = "data/stop_times.txt";
-const string fileStops = "data/stops.txt";
-const string fileTrips = "data/trips.txt";
-
 struct stops {          //only for distances between stops
     string stop_id;                 //stop_1_1
     double stop_lat;                //50.0873
@@ -32,5 +25,11 @@ struct trips {
     string trip_id;                 //block_2_trip_2_service_5
     string service_id;              //service_5                     //determine day of the week
 };
+
+
+vector<stops> getStops();
+vector<times> getTimes();
+vector<trips> getTrips();
+
 
 #endif // PARSER_H

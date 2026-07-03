@@ -1,5 +1,8 @@
 #include "parser.h"
 
+const string fileTimes = "data/stop_times.txt";
+const string fileStops = "data/stops.txt";
+const string fileTrips = "data/trips.txt";
 
 vector<string> splitLine(string line, char delimiter = ',') {
     line.back() = delimiter;
@@ -81,4 +84,3 @@ vector<trips> getTrips() {
     }
     return result;
 }
-
