@@ -9,8 +9,6 @@ typedef unsigned long long seconds;
 vector<vector<string>> parseFile(string filename);
 
 
-// const string fileRoutes = "routes.txt";
-// const string fileShapes = "shapes.txt";
 const string fileTimes = "data/stop_times.txt";
 const string fileStops = "data/stops.txt";
 const string fileTrips = "data/trips.txt";
