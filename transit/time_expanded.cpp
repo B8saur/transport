@@ -2,6 +2,7 @@
 
 //minimal time between arrival and departure from a stop IF you change the trip
 const seconds changeTime = 179;
+const seconds NEVER = 18'446'744'073'709'551'615ull;
 
 //choose the most common service and select trips of that service
 unordered_set<string> selectTrips(vector<trips> &tripsTable) {
@@ -70,13 +71,14 @@ struct Node {
     Node(seconds curTime, int stopIdx) : curTime(curTime), stopIdx(stopIdx){}
 };
 struct TimeExpandedGraph {
-    //stop_id -> index in nodes of the first central node of that stop
-    unordered_map<string, int> primaryStopNodes;
+    //stop index -> index in nodes of the first central node of that stop
+    vector<int> primaryStopNodes;
     vector<Node> nodes;
 };
 
 TimeExpandedGraph buildGraph(vector<times> &timesTable, vector<int> &timeOrdered, vector<stops> &stopsTable) {
     TimeExpandedGraph graph;
+    graph.primaryStopNodes.resize(stopsTable.size());
     unordered_map<string, int> lastSeenOnStop;          //stop_id -> index in nodes, central node
     unordered_map<string, int> stopIdx;
     for(int i=0; i<stopsTable.size(); i++) {
@@ -93,7 +95,7 @@ TimeExpandedGraph buildGraph(vector<times> &timesTable, vector<int> &timeOrdered
         int centralNodeIdx = graph.nodes.size();
         graph.nodes.emplace_back(timesTable[curIdx].departure_time, curStopIdx);
         if(!lastSeenOnStop.count(curStop)) {        //completely new stop
-            graph.primaryStopNodes[curStop] = centralNodeIdx;
+            graph.primaryStopNodes[stopIdx[curStop]] = centralNodeIdx;
         }
         else {
             graph.nodes[lastSeenOnStop[curStop]].nextCentral = centralNodeIdx;          //edge type 4
@@ -130,15 +132,113 @@ TimeExpandedGraph buildGraph(vector<times> &timesTable, vector<int> &timeOrdered
         }
         graph.nodes[inNode].nextCentral = centralNode;      //edge type 3
     }
+
+    return graph;
+}
+
+seconds dijkstra(TimeExpandedGraph &graph, int stopBegin, int stopEnd, seconds startTime) {
+    int startNode = graph.primaryStopNodes[stopBegin];
+    while(startNode != NONODE && startTime > graph.nodes[startNode].curTime) {
+        startNode = graph.nodes[startNode].nextCentral;
+    }
+
+    if(startNode == NONODE) {
+        return NEVER;
+    }
+
+    auto comp = [&graph](int a, int b) {
+        return graph.nodes[a].curTime > graph.nodes[b].curTime;
+    };
+    priority_queue<int, vector<int>, decltype(comp)> pq(comp);
+    vector<bool> visited(graph.nodes.size(), false);        //slight overkill
+    visited[startNode] = true;
+    pq.push(startNode);
+
+    while(!pq.empty()) {
+        int cur = pq.top();
+        pq.pop();
+
+        //find result
+        if(graph.nodes[cur].stopIdx == stopEnd) {
+            return graph.nodes[cur].curTime;
+        }
+
+        //add nexts
+        int next = graph.nodes[cur].nextCentral;
+        if(next != NONODE && visited[next] == false) {
+            pq.push(next);
+            visited[next] = true;
+        }
+        next = graph.nodes[cur].nextOther;
+        if(next != NONODE && visited[next] == false) {
+            pq.push(next);
+            visited[next] = true;
+        }
+    }
+
+    return NEVER;
+}
+
+void printTime(seconds curTime) {
+    seconds h = curTime/3600;   //seconds in an hour
+    seconds m = (curTime%3600)/60;
+    seconds s = curTime%60;
+    cout.width(2);
+    cout.fill('0');
+    cout << h << ":";
+    cout.width(2);
+    cout.fill('0');
+    cout << m << ":";
+    cout.width(2);
+    cout.fill('0');
+    cout << s;
 }
 
 int main() {
+    cout << "Loading data...\n";
+    cout.flush();
     vector<stops> stopsTable = getStops();
     vector<times> timesTable = getTimes();
     vector<trips> tripsTable = getTrips();
 
-    //TODO: interface
     vector<int> timeOrdered = sortTimesByDepartureTime(timesTable, tripsTable);
-    for(auto a : timeOrdered)
-        cout << a << " " << timesTable[a].departure_time <<  "\n";
+    TimeExpandedGraph graph = buildGraph(timesTable, timeOrdered, stopsTable);
+    cout << "All data loaded\n";
+    cout.flush();
+
+    cout << "Choose start, end and start time measured in seconds from midnight (86400 is a whole day)\n";
+    cout << "Stops range from " << 0 << " to " << stopsTable.size()-1 << "\n";
+    cout << "Ex. 21 37 36000\n";
+    cout.flush();
+
+    int start, end;
+    seconds startTime;
+    while(true) {
+        cout << "###:  ";
+        cout.flush();
+        cin >> start >> end >> startTime;
+        if(start < 0 || start >= stopsTable.size() || end < 0 || end >= stopsTable.size()) {
+            cout << "Chosen stops are out of range, try again\n";
+            cout.flush();
+            continue;
+        }
+        cout << "Start time is ";
+        printTime(startTime);
+        cout << "\nCalculating...\n";
+        cout.flush();
+
+        seconds endTime = dijkstra(graph, start, end, startTime);
+
+        if(endTime == NEVER) {
+            cout << "Sorry, no connection here\n";
+        }
+        else {
+            cout << "Earliest arrival found at " << endTime << " = ";
+            printTime(endTime);
+            cout << "\n";
+        }
+        cout << "Try again\n";
+        cout.flush();
+    }
+    return 0;
 }
