@@ -1,7 +1,7 @@
 #include "parser.h"
 
 //minimal time between arrival and departure from a stop IF you change the trip
-const seconds changeTime = 180;
+const seconds changeTime = 179;
 
 //choose the most common service and select trips of that service
 unordered_set<string> selectTrips(vector<trips> &tripsTable) {
@@ -84,7 +84,7 @@ TimeExpandedGraph buildGraph(vector<times> &timesTable, vector<int> &timeOrdered
     }
 
     unordered_map<string, int> prevTripOutNode;         //trip_id -> index in nodes
-    unordered_map<int, int> prevCentralNode;            //central node id -> central node id of the previous node
+    vector<int> allInNodes;         //indexes in nodes of all in nodes
     for(auto curIdx : timeOrdered) {
         string &curStop = timesTable[curIdx].stop_id;
         int curStopIdx = stopIdx[curStop];
@@ -94,11 +94,9 @@ TimeExpandedGraph buildGraph(vector<times> &timesTable, vector<int> &timeOrdered
         graph.nodes.emplace_back(timesTable[curIdx].departure_time, curStopIdx);
         if(!lastSeenOnStop.count(curStop)) {        //completely new stop
             graph.primaryStopNodes[curStop] = centralNodeIdx;
-            prevCentralNode[centralNodeIdx] = NONODE;
         }
         else {
             graph.nodes[lastSeenOnStop[curStop]].nextCentral = centralNodeIdx;          //edge type 4
-            prevCentralNode[centralNodeIdx] = lastSeenOnStop[curStop];
         }
         lastSeenOnStop[curStop] = centralNodeIdx;
 
@@ -110,9 +108,11 @@ TimeExpandedGraph buildGraph(vector<times> &timesTable, vector<int> &timeOrdered
         //in node
         if(timesTable[curIdx].stop_sequence != 1) {         //not the start - something actually arrives and there's previous out node
             int inNodeIdx = graph.nodes.size();
+            allInNodes.push_back(inNodeIdx);
             graph.nodes.emplace_back(timesTable[curIdx].departure_time, curStopIdx);
             graph.nodes[inNodeIdx].nextOther = outNodeIdx;          //edge type 2
 
+            //prev out  to  cur in
             int prevOutNode = prevTripOutNode[timesTable[curIdx].trip_id];
             graph.nodes[prevOutNode].nextOther = inNodeIdx;         //edge type 1
         }
@@ -121,7 +121,15 @@ TimeExpandedGraph buildGraph(vector<times> &timesTable, vector<int> &timeOrdered
         prevTripOutNode[timesTable[curIdx].trip_id] = outNodeIdx;
     }
 
-    //TODO: loop for edges type 3, using `prevCentralNode`
+    for(int inNode : allInNodes) {      //create type 3 edges
+        //nodes are always created in order: central, out, [in]
+        //so each in node has its central node at `x-2`
+        int centralNode = inNode-2;
+        while(centralNode != NONODE && graph.nodes[centralNode].curTime - graph.nodes[inNode].curTime < changeTime) {
+            centralNode = graph.nodes[centralNode].nextCentral;
+        }
+        graph.nodes[inNode].nextCentral = centralNode;      //edge type 3
+    }
 }
 
 int main() {
