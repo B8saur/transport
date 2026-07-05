@@ -26,3 +26,10 @@ Pisanie zakończone, chyba pomyślnie. Parę testów sugeruje, że kod działa. 
 
 Miłej zabawy!
 
+## RAPTOR
+
+### Log 1
+Przede wszystkim to potrzebujemy tutaj obliczać przejścia piesze, więc przydałoby się umieć szacować odległości między przystankami - [haversine](https://en.wikipedia.org/wiki/Haversine_formula).
+
+### Log 2
+Pomimo paru błędów, jednak udało się naprawić nieścisłości w implementacji haversine.
