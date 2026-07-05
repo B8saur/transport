@@ -32,9 +32,9 @@ vector<vector<string>> parseFile(const string filename) {
     return result;
 }
 
-vector<stop> getStops() {
+vector<stops> getStops() {
     vector<vector<string>> data = parseFile(fileStops);
-    vector<stop> result(data.size());
+    vector<stops> result(data.size());
     for(int i=0; i<data.size(); i++) {
         result[i].stop_id = data[i][0];
         result[i].stop_lat = stod(data[i][4]);
@@ -61,9 +61,9 @@ seconds convertTime(string curTime) {
     }
     return result;
 }
-vector<stopTime> getTimes() {
+vector<times> getTimes() {
     vector<vector<string>> data = parseFile(fileTimes);
-    vector<stopTime> result(data.size());
+    vector<times> result(data.size());
     for(int i=0; i<data.size(); i++) {
         result[i].trip_id = data[i][0];
         result[i].arrival_time = convertTime(data[i][1]);
@@ -74,7 +74,7 @@ vector<stopTime> getTimes() {
     }
 
     //make sure it's ordered even if the standard doesn't force it (idk, haven't checked that)
-    sort(result.begin(), result.end(), [](stopTime &a, stopTime &b) {
+    sort(result.begin(), result.end(), [](times &a, times &b) {
         if(a.trip_id == b.trip_id)
             return a.stop_sequence < b.stop_sequence;
         return a.trip_id < b.trip_id;
@@ -82,9 +82,9 @@ vector<stopTime> getTimes() {
     return result;
 }
 
-vector<trip> getTrips() {
+vector<trips> getTrips() {
     vector<vector<string>> data = parseFile(fileTrips);
-    vector<trip> result(data.size());
+    vector<trips> result(data.size());
     for(int i=0; i<data.size(); i++) {
         result[i].trip_id = data[i][0];
         result[i].route_id = data[i][1];
@@ -92,7 +92,7 @@ vector<trip> getTrips() {
     }
 
     //force order by `trip_id`, the same as above
-    sort(result.begin(), result.end(), [](trip &a, trip &b) {
+    sort(result.begin(), result.end(), [](trips &a, trips &b) {
         return a.trip_id < b.trip_id;
     });
     return result;
