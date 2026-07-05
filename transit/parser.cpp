@@ -87,6 +87,7 @@ vector<trips> getTrips() {
     vector<trips> result(data.size());
     for(int i=0; i<data.size(); i++) {
         result[i].trip_id = data[i][0];
+        result[i].route_id = data[i][1];
         result[i].service_id = data[i][2];
     }
     return result;

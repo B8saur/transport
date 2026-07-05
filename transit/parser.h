@@ -23,6 +23,7 @@ struct times {          //most important
 
 struct trips {
     string trip_id;                 //block_2_trip_2_service_5
+    string route_id;                //route_31                      //trips with the same route_id have the same list of stops
     string service_id;              //service_5                     //determine day of the week
 };
 
