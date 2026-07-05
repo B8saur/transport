@@ -90,5 +90,10 @@ vector<trips> getTrips() {
         result[i].route_id = data[i][1];
         result[i].service_id = data[i][2];
     }
+
+    //force order by `trip_id`, the same as above
+    sort(result.begin(), result.end(), [](trips &a, trips &b) {
+        return a.trip_id < b.trip_id;
+    });
     return result;
 }
