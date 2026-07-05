@@ -60,3 +60,6 @@ Jedna udało się odbugować. Parę testów, bez przejść pieszych, daje takie 
 Po dodaniu przejść pieszych algorytm działa fajnie. Zwykle lepiej niż `Time-Expanded`, bo przejścia piesze. Wydaje się, że nie jest to *za* dobrze i rzeczywiście wszystko jest poprawnie.
 
 Ponownie, miłej zabawy!
+
+### Log 10
+Po namyśle, jednak przesadziłem z tą prędkością pieszego. Toteż zmiana na mniejszą wartość.

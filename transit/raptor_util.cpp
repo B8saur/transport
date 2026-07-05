@@ -23,10 +23,10 @@ double getDistance(double a_lat, double a_lon, double b_lat, double b_lon) {
 }
 
 //in km/s, to match units
-//this is 2m/s, slower than actual walking speed
+//this is 0.8 m/s = 2.88 km/h, slower than actual walking speed
 //but it assumes that you can walk in a straight line between stops
 //which is not true, so we account for BUILDINGS AND STUFF
-double walkingSpeed = 0.002;
+double walkingSpeed = 0.0008;
 vector<vector<seconds>> getWalks(vector<stops> &stopsTable) {
     int size = stopsTable.size();
     vector<vector<seconds>> result(size, vector<seconds>(size, 0));
