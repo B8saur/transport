@@ -36,3 +36,15 @@ Pomimo paru błędów, jednak udało się naprawić nieścisłości w implementa
 
 ### Log 3
 Potrzebujemy szacować czas przejść pieszych. Propozycja jest taka, by obliczyć odległość pomiędzy przystankami i podzielić przez prędkość pieszego - `raptor_util.cpp:walkingSpeed`. Prędkość dobrana jako specjalnie mała, żeby ukryć oszustwa związane z pominięciem ... wszystkiego poza odległością w linii prostej.
+
+### Log 4
+Tak samo jak przy poprzednim algorytmie, tu również rozważamy tylko kursy najpopularniejszego serwisu (tj. tego, który ma najwięcej kursów).
+
+### Log 5
+Parserka (do) tablic używanych w algorytmie zrobiona, ale z kilkoma założeniami, o różnych stopniach oszustwa:
+1. W `stop_times.txt` nie ma kursów (trip_id), które nie występują w `trips.txt`
+1. Pojazd nie cofa się w czasie docierając do kolejnych przystanków danego kursu.
+1. Każdy kurs danej trasy ma dokładnie takie same różnice w czasach przyjazdów.
+1. Docierając na przystanek interesuje nas czas przyjazdu (arrival_time), ale gdy próbujemy złapać przesiadkę, to pytamy od czas odjazdu (departure_time) tego drugiego środka transportu. Tu jest inaczej - przyjmuję, że (potencjalna) różnica tych czasów będzie mniej znacząca niż ustalony czas na przesiadkę i korzystam tylko z czasów przyjazdów.
+
+
