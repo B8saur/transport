@@ -94,6 +94,8 @@ vector<routes> getRoutes(vector<stops> &stopsTable, vector<times> &timesTable, v
                 prevTime = timesTable[curTimesIdx].arrival_time;
                 curTimesIdx += 1;
             }
+            //cheap trick - make it 0-ended
+            curRoute.between.push_back(0);
         }
         else {          //known route, just add another start time
             auto &curRoute = result[routeIdx[trip.route_id]];

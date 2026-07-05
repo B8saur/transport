@@ -47,7 +47,16 @@ Parserka (do) tablic używanych w algorytmie zrobiona, ale z kilkoma założenia
 1. Każdy kurs danej trasy ma dokładnie takie same różnice w czasach przyjazdów.
 1. Docierając na przystanek interesuje nas czas przyjazdu (arrival_time), ale gdy próbujemy złapać przesiadkę, to pytamy od czas odjazdu (departure_time) tego drugiego środka transportu. Tu jest inaczej - przyjmuję, że (potencjalna) różnica tych czasów będzie mniej znacząca niż ustalony czas na przesiadkę i korzystam tylko z czasów przyjazdów.
 
-
 ### Log 6
 Udało się znaleźć błąd w wyznaczaniu tras - jedna trasa ma dwa (różne!) kierunki. Rozwiązanie - dokleić kierunek do route_id. Po takiej poprawde czasy odjazdów w tabelce już wydają się realne. Na szczęście taka poprawka nic nie zmienia w rozwiązaniu `Time-Expanded`, bo nie korzysta ono z pola `route_id`.
 
+### Log 7
+Mam dobrą i złą wiadomość. Zła jest taka, że nie działa. A dobra taka, że udało się skończyć klepać raptora.
+
+### Log 8
+Jedna udało się odbugować. Parę testów, bez przejść pieszych, daje takie same wyniki jak wersja `Time-Expanded`.
+
+### Log 9
+Po dodaniu przejść pieszych algorytm działa fajnie. Zwykle lepiej niż `Time-Expanded`, bo przejścia piesze. Wydaje się, że nie jest to *za* dobrze i rzeczywiście wszystko jest poprawnie.
+
+Ponownie, miłej zabawy!
