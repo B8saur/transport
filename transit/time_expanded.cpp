@@ -4,7 +4,7 @@
 const seconds changeTime = 179;
 
 //choose the most common service and select trips of that service
-unordered_set<string> selectTrips(vector<trips> &tripsTable) {
+unordered_set<string> selectTrips(vector<trip> &tripsTable) {
     unordered_map<string, int> countServices;
     for(auto &trip : tripsTable) {
         countServices[trip.service_id] += 1;
@@ -29,7 +29,7 @@ unordered_set<string> selectTrips(vector<trips> &tripsTable) {
 }
 
 //doesn't actually sort, returns table of indexes ordered by departure_time
-vector<int> sortTimesByDepartureTime(vector<times> &timesTable, vector<trips> &tripsTable) {
+vector<int> sortTimesByDepartureTime(vector<stopTime> &timesTable, vector<trip> &tripsTable) {
     unordered_set<string> chosenTrips = selectTrips(tripsTable);
     vector<int> result;
     for(int i=0; i<timesTable.size(); i++) {
@@ -75,7 +75,7 @@ struct TimeExpandedGraph {
     vector<Node> nodes;
 };
 
-TimeExpandedGraph buildGraph(vector<times> &timesTable, vector<int> &timeOrdered, vector<stops> &stopsTable) {
+TimeExpandedGraph buildGraph(vector<stopTime> &timesTable, vector<int> &timeOrdered, vector<stop> &stopsTable) {
     TimeExpandedGraph graph;
     graph.primaryStopNodes.resize(stopsTable.size());
     unordered_map<string, int> lastSeenOnStop;          //stop_id -> index in nodes, central node
@@ -196,9 +196,9 @@ void printTime(seconds curTime) {
 int main() {
     cout << "Loading data...\n";
     cout.flush();
-    vector<stops> stopsTable = getStops();
-    vector<times> timesTable = getTimes();
-    vector<trips> tripsTable = getTrips();
+    vector<stop> stopsTable = getStops();
+    vector<stopTime> timesTable = getTimes();
+    vector<trip> tripsTable = getTrips();
 
     vector<int> timeOrdered = sortTimesByDepartureTime(timesTable, tripsTable);
     TimeExpandedGraph graph = buildGraph(timesTable, timeOrdered, stopsTable);

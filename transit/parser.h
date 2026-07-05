@@ -7,13 +7,13 @@ using namespace std;
 typedef unsigned long long seconds;
 const seconds NEVER = 1e18;
 
-struct stops {          //only for distances between stops
+struct stop {           //only for distances between stops
     string stop_id;                 //stop_1_1
     double stop_lat;                //50.0873
     double stop_lon;                //20.0596
 };
 
-struct times {          //most important
+struct stopTime {       //most important
     string trip_id;                 //block_2_trip_2_service_5
     seconds arrival_time;           //05:03:00
     seconds departure_time;         //05:03:00
@@ -22,16 +22,16 @@ struct times {          //most important
     double shape_dist_traveled;     //0                             //distance from start (point) of the trip
 };
 
-struct trips {
+struct trip {
     string trip_id;                 //block_2_trip_2_service_5
     string route_id;                //route_31                      //trips with the same route_id have the same list of stops
     string service_id;              //service_5                     //determine day of the week
 };
 
 
-vector<stops> getStops();
-vector<times> getTimes();
-vector<trips> getTrips();
+vector<stop> getStops();
+vector<stopTime> getTimes();
+vector<trip> getTrips();
 
 
 #endif // PARSER_H
