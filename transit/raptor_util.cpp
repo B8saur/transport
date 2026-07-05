@@ -22,4 +22,20 @@ double getDistance(double a_lat, double a_lon, double b_lat, double b_lon) {
     return EARTH_RADIUS * inversed;
 }
 
+//in km/s, to match units
+//this is 2m/s, slower than actual walking speed
+//but it assumes that you can walk in a straight line between stops
+//which is not true, so we account for BUILDINGS AND STUFF
+double walkingSpeed = 0.002;
+vector<vector<seconds>> getWalks(vector<stops> &stopsTable) {
+    int size = stopsTable.size();
+    vector<vector<seconds>> result(size, vector<seconds>(size, 0));
+    for(int i=0; i<size; i++) {
+        for(int j=0; j<size; j++) {
+            result[i][j] = getDistance(stopsTable[i].stop_lat, stopsTable[i].stop_lon,
+                stopsTable[j].stop_lat, stopsTable[j].stop_lon) / walkingSpeed;
+        }
+    }
+    return result;
+}
 

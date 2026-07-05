@@ -33,3 +33,6 @@ Przede wszystkim to potrzebujemy tutaj obliczać przejścia piesze, więc przyda
 
 ### Log 2
 Pomimo paru błędów, jednak udało się naprawić nieścisłości w implementacji haversine.
+
+### Log 3
+Potrzebujemy szacować czas przejść pieszych. Propozycja jest taka, by obliczyć odległość pomiędzy przystankami i podzielić przez prędkość pieszego - `raptor_util.cpp:walkingSpeed`. Prędkość dobrana jako specjalnie mała, żeby ukryć oszustwa związane z pominięciem ... wszystkiego poza odległością w linii prostej.
