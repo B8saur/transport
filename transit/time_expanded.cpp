@@ -2,7 +2,6 @@
 
 //minimal time between arrival and departure from a stop IF you change the trip
 const seconds changeTime = 179;
-const seconds NEVER = 18'446'744'073'709'551'615ull;
 
 //choose the most common service and select trips of that service
 unordered_set<string> selectTrips(vector<trips> &tripsTable) {

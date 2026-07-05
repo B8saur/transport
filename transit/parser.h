@@ -5,6 +5,7 @@
 using namespace std;
 
 typedef unsigned long long seconds;
+const seconds NEVER = 1e18;
 
 struct stops {          //only for distances between stops
     string stop_id;                 //stop_1_1
